@@ -1,0 +1,27 @@
+SightHearing
+
+Users:
+	- Tourists
+	- Tour Guide
+
+Goal: To replace the audio mp3 players given on audiotours at tourist attractions.
+
+Tourist (mobile):
+	- A tourist will use this app when they are exploring sights for a more enriching experience.
+	- Audio tours can be searched and browsed by attraction site or by location on a map
+	- A tour is made up of several tracks of two categories: Informational or Direction
+	- A tour track is made up of a single information + direction (to next site). This can be triggered to play either by pressing the play button each track (with the option of continuous play?) or by geolocation detection
+	- While a track is playing, the device should display images, track title, additional information, links, etc. related to each site
+	- While a diection is playing, it should provide tourists with a map and direction (if possible)
+	- After completion, a tourist should be able to rate, comment and tip the tourist
+
+Tour Guide(mobile + web):
+	- A tour guide should be able to create a new tour by dropping pins on a map or by taking the immediate geolocation of the device (if mobile) and customizing the route by pin order
+	- Each pin represents a track which will need an information track + direction to next pin
+	- Each pin can also include photos, additional information, links, etc.
+	- Each tour (collection of tracks) can be given a cover photo description, tags, etc.
+	- Until a tour is published, a tour in development should be able to be saved onto the device (mobile only)
+	- A tour guide can be VERIFIED (similar to twitter) and flare if the tour guide is legit in some way (may be manual for now)
+	- A tour guide can add payment option to receive tips (will have fee associated)
+	- A tour can be made free (with tip option) or manditory fee to download
+	
