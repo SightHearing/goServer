@@ -31,6 +31,7 @@ func main() {
 	fmt.Println(cred)
 	db, err := sql.Open("mysql", cred.FormatDSN())
 	if err != nil {
+		fmt.Println("sql open error:", err.Error())
 		panic(err.Error()) // Just for example purpose. You should use proper error handling instead of panic
 	}
 	defer db.Close()
@@ -40,6 +41,31 @@ func main() {
 	if err != nil {
 		fmt.Println("Ping error:", err.Error())
 		panic(err.Error()) // proper error handling instead of panic in your app
+	}
+
+	//query a db for rows
+	// index := 0
+	statement, err := db.Prepare("SELECT * FROM user")
+	if err != nil {
+		fmt.Println("prepare error:", err.Error())
+	}
+	rows, err := statement.Query()
+	// rows, err := db.Query("SELECT * FROM user", index)
+	if err != nil {
+		fmt.Println("Query error:", err.Error())
+		panic(err.Error())
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var u user
+		if err := rows.Scan(&u.index, &u.email, &u.password); err != nil {
+			fmt.Println("Scan error", err.Error())
+		}
+		fmt.Printf("User name: %s password: %s\n", u.email, u.password)
+	}
+	if err := rows.Err(); err != nil {
+		fmt.Println("Row error:", err.Error())
 	}
 	// db, err := sql.Open("mysql", cred)
 	// if err != nil {
