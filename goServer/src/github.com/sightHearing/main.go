@@ -1,12 +1,12 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 
 	mysql "github.com/go-sql-driver/mysql"
 
 	"github.com/sightHearing/config"
+	"github.com/sightHearing/database"
 )
 
 type user struct {
@@ -21,41 +21,55 @@ func main() {
 	awsCred := config.AwsSql
 	//id:password@tcp(your-amazonaws-uri.com:3306)/dbname
 	// cred := awsCred.UserName + ":" + awsCred.Password + "@tcp(" + awsCred.Endpoint + ":" + awsCred.Port + ")/" + "sighthearingdb"
-	cred := mysql.Config{
+	sqlCred := mysql.Config{
 		User:   awsCred.UserName,
 		Passwd: awsCred.Password,
 		Net:    "tcp",
 		Addr:   awsCred.Endpoint + ":" + awsCred.Port,
 		DBName: "sighthearingdb",
 	}
-	fmt.Println(cred)
-	db, err := sql.Open("mysql", cred.FormatDSN())
+	fmt.Println(sqlCred)
+	// db, err := sql.Open("mysql", cred.FormatDSN())
+	// if err != nil {
+	// 	fmt.Println("sql open error:", err.Error())
+	// 	panic(err.Error()) // Just for example purpose. You should use proper error handling instead of panic
+	// }
+	// defer db.Close()
+	db := database.Database{}
+	err := db.ConnectDb(sqlCred)
 	if err != nil {
-		fmt.Println("sql open error:", err.Error())
-		panic(err.Error()) // Just for example purpose. You should use proper error handling instead of panic
+		panic("Could not connect to db " + err.Error())
 	}
-	defer db.Close()
 
-	// Open doesn't open a connection. Validate DSN data:
-	err = db.Ping()
+	// // Open doesn't open a connection. Validate DSN data:
+	// err = db.Ping()
+	// if err != nil {
+	// 	fmt.Println("Ping error:", err.Error())
+	// 	panic(err.Error()) // proper error handling instead of panic in your app
+	// }
+	err = db.PingConnection()
 	if err != nil {
-		fmt.Println("Ping error:", err.Error())
-		panic(err.Error()) // proper error handling instead of panic in your app
+		panic("DB connection failed: " + err.Error())
 	}
 
 	//query a db for rows
 	// index := 0
-	statement, err := db.Prepare("SELECT * FROM user")
+	// statement, err := db.Prepare("SELECT * FROM user")
+	// if err != nil {
+	// 	fmt.Println("prepare error:", err.Error())
+	// }
+	// rows, err := statement.Query()
+	// // rows, err := db.Query("SELECT * FROM user", index)
+	// if err != nil {
+	// 	fmt.Println("Query error:", err.Error())
+	// 	panic(err.Error())
+	// }
+	// defer rows.Close()
+	statement := "SELECT * FROM user"
+	rows, err := db.QueryDB(statement)
 	if err != nil {
-		fmt.Println("prepare error:", err.Error())
+		panic("Query not working: " + err.Error())
 	}
-	rows, err := statement.Query()
-	// rows, err := db.Query("SELECT * FROM user", index)
-	if err != nil {
-		fmt.Println("Query error:", err.Error())
-		panic(err.Error())
-	}
-	defer rows.Close()
 
 	for rows.Next() {
 		var u user
